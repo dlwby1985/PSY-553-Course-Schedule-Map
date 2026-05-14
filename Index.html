@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PSY 553 顶点课程 · 学期进度流程图</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #8C1D40; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
+    #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #8C1D40; z-index: 9999; }
+    #__bundler_thumbnail svg { width: 100%; height: 100%; object-fit: contain; }
+    #__bundler_placeholder { color: #999; font-size: 14px; }
+  </style>
+  <noscript>
+    <style>#__bundler_loading { display: none; }</style>
+    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
+      This page requires JavaScript to display.
+    </div>
+  </noscript>
+</head>
+<body>
+  <div id="__bundler_thumbnail">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#8C1D40"></rect>
+    <g transform="translate(240, 320)" stroke="#FFC627" stroke-width="14" fill="none" stroke-linecap="round">
+      <circle cx="60" cy="80" r="48" fill="#FFC627"></circle>
+      <line x1="120" y1="80" x2="220" y2="80"></line>
+      <polyline points="200,60 220,80 200,100"></polyline>
+      <circle cx="280" cy="80" r="48"></circle>
+      <line x1="340" y1="80" x2="440" y2="80"></line>
+      <polyline points="420,60 440,80 420,100"></polyline>
+      <circle cx="500" cy="80" r="48"></circle>
+      <line x1="560" y1="80" x2="660" y2="80"></line>
+      <polyline points="640,60 660,80 640,100"></polyline>
+      <circle cx="720" cy="80" r="48" fill="#FFC627"></circle>
+    </g>
+    <text x="600" y="520" text-anchor="middle" font-family="sans-serif" font-size="48" font-weight="700" fill="#FFC627">PSY 553</text>
+    <text x="600" y="580" text-anchor="middle" font-family="sans-serif" font-size="26" fill="#FAF6F0" opacity="0.8">顶点课程 · 学期进度流程图</text>
+  </svg>
+</div>
+  <div id="__bundler_loading">Unpacking...</div>
+
+  <script>
+    
+document.addEventListener('DOMContentLoaded', async function() {
+  const loading = document.getElementById('__bundler_loading');
+  function setStatus(msg) { if (loading) loading.textContent = msg; }
+
+  // Error sink persists across replaceWith since it's on window, not the DOM.
+  window.addEventListener('error', function(e) {
+    var p = document.body || document.documentElement;
+    var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
+    d.id = '__bundler_err';
+    d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
+    d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') +
+      '[bundle] ' + (e.message || e.type) +
+      (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
+  }, true);
+
+  try {
+    const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
+    const templateEl = document.querySelector('script[type="__bundler/template"]');
+    if (!manifestEl || !templateEl) {
+      setStatus('Error: missing bundle data');
+      console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
+      return;
+    }
+
+    const manifest = JSON.parse(manifestEl.textContent);
+    let template = JSON.parse(templateEl.textContent);
+
+    const uuids = Object.keys(manifest);
+    setStatus('Unpacking ' + uuids.length + ' assets...');
+
+    const blobUrls = {};
+    await Promise.all(uuids.map(async (uuid) => {
+      const entry = manifest[uuid];
+      try {
+        const binaryStr = atob(entry.data);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+
+        let finalBytes = bytes;
+        if (entry.compressed) {
+          if (typeof DecompressionStream !== 'undefined') {
+            const ds = new DecompressionStream('gzip');
+            const writer = ds.writable.getWriter();
+            const reader = ds.readable.getReader();
+            writer.write(bytes);
+            writer.close();
+            const chunks = [];
+            let totalLen = 0;
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+              totalLen += value.length;
+            }
+            finalBytes = new Uint8Array(totalLen);
+            let offset = 0;
+            for (const chunk of chunks) { finalBytes.set(chunk, offset); offset += chunk.length; }
+          } else {
+            console.warn('DecompressionStream not available, asset ' + uuid + ' may not render');
+          }
+        }
+
+        blobUrls[uuid] = URL.createObjectURL(new Blob([finalBytes], { type: entry.mime }));
+      } catch (err) {
+        console.error('Failed to decode asset ' + uuid + ':', err);
+        blobUrls[uuid] = URL.createObjectURL(new Blob([], { type: entry.mime }));
+      }
+    }));
+
+    const extResEl = document.querySelector('script[type="__bundler/ext_resources"]');
+    const extResources = extResEl ? JSON.parse(extResEl.textContent) : [];
+    const resourceMap = {};
+    for (const entry of extResources) {
+      if (blobUrls[entry.uuid]) resourceMap[entry.id] = blobUrls[entry.uuid];
+    }
+
+    setStatus('Rendering...');
+    for (const uuid of uuids) template = template.split(uuid).join(blobUrls[uuid]);
+
+    // Strip integrity + crossorigin — blob URLs from a file:// document inherit
+    // a null origin, so crossorigin forces a CORS fetch that SRI then rejects.
+    // The manifest bytes are ours; SRI protects against CDN compromise, not this.
+    template = template.replace(/\s+integrity="[^"]*"/gi, '').replace(/\s+crossorigin="[^"]*"/gi, '');
+
+    const resourceScript = '<script>window.__resources = ' +
+      JSON.stringify(resourceMap).split('</' + 'script>').join('<\\/' + 'script>') +
+      ';</' + 'script>';
+    // Inject after <head> so the DOCTYPE stays first; prepending the script
+    // would push the parser into quirks mode. DOMParser always emits a <head>
+    // (synthesizing one if the source HTML omitted it) but may carry
+    // attributes through, so match the full opening tag. slice() rather than
+    // replace() keeps us clear of $-pattern substitution in resourceScript.
+    const headOpen = template.match(/<head[^>]*>/i);
+    if (headOpen) {
+      const i = headOpen.index + headOpen[0].length;
+      template = template.slice(0, i) + resourceScript + template.slice(i);
+    }
+
+    // Parse the template and swap the root element. Scripts inserted via
+    // DOMParser/replaceWith are inert per spec — re-create each with
+    // createElement so they execute, awaiting onload for src scripts to
+    // preserve ordering (React before ReactDOM before Babel before text/babel).
+    const doc = new DOMParser().parseFromString(template, 'text/html');
+    document.documentElement.replaceWith(doc.documentElement);
+    const dead = Array.from(document.scripts);
+    for (const old of dead) {
+      const s = document.createElement('script');
+      for (const a of old.attributes) s.setAttribute(a.name, a.value);
+      s.textContent = old.textContent;
+      // text/babel scripts with a src: fetch and inline. transformScriptTags
+      // does XHR against the src, but blob:null/ from a file:// origin is
+      // silently dropped. Inlining makes it a plain inline babel script,
+      // which transformScriptTags handles unconditionally.
+      if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
+        const r = await fetch(s.src);
+        s.textContent = await r.text();
+        s.removeAttribute('src');
+      }
+      const p = s.src ? new Promise(function(r) { s.onload = s.onerror = r; }) : null;
+      old.replaceWith(s);
+      if (p) await p;
+    }
+    // Babel standalone auto-transforms type=text/babel on DOMContentLoaded,
+    // which fired before we swapped the document. Trigger manually if present.
+    if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
+      window.Babel.transformScriptTags();
+    }
+  } catch (err) {
+    setStatus('Error unpacking: ' + err.message);
+    console.error('Bundle unpack error:', err);
+  }
+});
+
+  </script>
+
+  <script type="__bundler/manifest">
+{}
+  </script>
+
+  <script type="__bundler/ext_resources">
+[]
+  </script>
+
+  <script type="__bundler/template">
+"<!DOCTYPE html>\n<html lang=\"zh-CN\"><head>\n\n\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\">\n<meta http-equiv=\"Pragma\" content=\"no-cache\">\n<meta http-equiv=\"Expires\" content=\"0\">\n<title>PSY 553 顶点课程 · 学期进度流程图<\u002Ftitle>\n<style>\n  :root {\n    --maroon: #8C1D40;\n    --maroon-deep: #5C0E2A;\n    --maroon-darker: #3D0919;\n    --gold: #FFC627;\n    --gold-soft: #FFD968;\n    --offwhite: #FAF6F0;\n    --offwhite-muted: rgba(250, 246, 240, 0.72);\n    --offwhite-faint: rgba(250, 246, 240, 0.18);\n    --ink: #1A1A1A;\n  }\n\n  * { box-sizing: border-box; margin: 0; padding: 0; }\n\n  html, body {\n    background: var(--maroon);\n    color: var(--offwhite);\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Source Han Sans CN\", sans-serif;\n    line-height: 1.65;\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n    font-feature-settings: \"kern\", \"palt\";\n  }\n\n  body {\n    min-height: 100vh;\n    display: flex;\n    flex-direction: column;\n    background:\n      radial-gradient(circle at 15% 10%, rgba(255, 198, 39, 0.06), transparent 45%),\n      radial-gradient(circle at 85% 90%, rgba(255, 198, 39, 0.04), transparent 50%),\n      var(--maroon);\n  }\n\n  /* ---------- Header ---------- */\n  .site-header {\n    border-bottom: 1px solid var(--offwhite-faint);\n    background: var(--maroon-deep);\n    padding: 32px 48px 28px;\n  }\n  .site-header-inner {\n    max-width: 1400px;\n    margin: 0 auto;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n  }\n  .eyebrow {\n    display: inline-flex;\n    align-items: center;\n    gap: 10px;\n    font-size: 11px;\n    font-weight: 600;\n    letter-spacing: 0.18em;\n    text-transform: uppercase;\n    color: var(--gold);\n    margin-bottom: 14px;\n  }\n  .eyebrow::before {\n    content: \"\";\n    width: 28px;\n    height: 1.5px;\n    background: var(--gold);\n    display: inline-block;\n  }\n  h1.course-title {\n    color: var(--gold);\n    font-size: clamp(28px, 3.4vw, 42px);\n    font-weight: 700;\n    letter-spacing: 0.01em;\n    line-height: 1.2;\n  }\n  .course-subtitle {\n    color: var(--offwhite-muted);\n    font-size: clamp(13px, 1.3vw, 16px);\n    font-weight: 300;\n    letter-spacing: 0.04em;\n    margin-top: 4px;\n  }\n\n  /* ---------- Intro ---------- */\n  main {\n    flex: 1;\n    padding: 56px 48px 72px;\n    max-width: 1400px;\n    margin: 0 auto;\n    width: 100%;\n  }\n  .intro-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: baseline;\n    flex-wrap: wrap;\n    gap: 18px;\n    margin-bottom: 48px;\n    padding-bottom: 24px;\n    border-bottom: 1px dashed var(--offwhite-faint);\n  }\n  .intro {\n    font-size: clamp(15px, 1.4vw, 17px);\n    color: var(--offwhite);\n    max-width: 720px;\n    line-height: 1.7;\n  }\n  .legend {\n    display: flex;\n    gap: 14px;\n    flex-wrap: wrap;\n  }\n  .legend-tag {\n    font-size: 11px;\n    letter-spacing: 0.08em;\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border-radius: 2px;\n  }\n  .legend-tag.submit {\n    background: var(--gold);\n    color: var(--maroon-darker);\n    font-weight: 700;\n  }\n  .legend-tag.focus {\n    background: transparent;\n    color: var(--gold);\n    font-weight: 600;\n    border: 1px solid var(--gold);\n  }\n\n  /* ---------- Phase grid ---------- */\n  .phases {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 0;\n    position: relative;\n  }\n\n  .phase {\n    background: var(--maroon-deep);\n    border: 1px solid var(--offwhite-faint);\n    border-radius: 4px;\n    padding: 28px 24px 28px;\n    display: flex;\n    flex-direction: column;\n    position: relative;\n    transition: transform 0.25s ease, border-color 0.25s ease;\n  }\n  .phase:hover {\n    border-color: var(--gold);\n    transform: translateY(-2px);\n  }\n\n  /* Connecting arrows between phases (desktop) */\n  .phase + .phase::before {\n    content: \"\";\n    position: absolute;\n    top: 50%;\n    left: -28px;\n    width: 28px;\n    height: 1.5px;\n    background: var(--gold);\n    transform: translateY(-50%);\n    z-index: 2;\n  }\n  .phase + .phase::after {\n    content: \"\";\n    position: absolute;\n    top: 50%;\n    left: -4px;\n    width: 0;\n    height: 0;\n    border-left: 8px solid var(--gold);\n    border-top: 6px solid transparent;\n    border-bottom: 6px solid transparent;\n    transform: translateY(-50%);\n    z-index: 2;\n  }\n\n  /* Cards need spacing between them to give arrow room */\n  .phases {\n    gap: 32px;\n  }\n\n  .phase-number-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    margin-bottom: 18px;\n  }\n  .phase-num {\n    font-family: \"SF Mono\", \"Roboto Mono\", \"Courier New\", monospace;\n    font-size: 11px;\n    letter-spacing: 0.2em;\n    color: var(--gold);\n    font-weight: 600;\n  }\n  .phase-pill {\n    font-size: 10px;\n    letter-spacing: 0.16em;\n    text-transform: uppercase;\n    color: var(--offwhite-muted);\n    border: 1px solid var(--offwhite-faint);\n    border-radius: 999px;\n    padding: 3px 10px;\n  }\n\n  .phase-name {\n    color: var(--offwhite);\n    font-size: clamp(18px, 1.5vw, 22px);\n    font-weight: 700;\n    line-height: 1.3;\n    margin-bottom: 4px;\n  }\n  .phase-week {\n    color: var(--gold);\n    font-size: 12px;\n    letter-spacing: 0.08em;\n    font-weight: 500;\n    margin-bottom: 22px;\n  }\n\n  .phase-divider {\n    height: 1px;\n    background: linear-gradient(to right, var(--gold), transparent);\n    margin-bottom: 22px;\n  }\n\n  .section {\n    margin-bottom: 24px;\n  }\n  .section:last-child {\n    margin-bottom: 0;\n  }\n  .section-header {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 12px;\n  }\n  .section-tag {\n    font-size: 11px;\n    letter-spacing: 0.06em;\n    padding: 5px 10px;\n    border-radius: 2px;\n    font-weight: 700;\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n  }\n  .section-tag.submit {\n    background: var(--gold);\n    color: var(--maroon-darker);\n  }\n  .section-tag.focus {\n    background: transparent;\n    color: var(--gold);\n    border: 1px solid var(--gold);\n    font-weight: 600;\n  }\n  .section-tag svg {\n    flex-shrink: 0;\n  }\n\n  ul.items {\n    list-style: none;\n    padding: 0;\n    margin: 0;\n  }\n  ul.items li {\n    position: relative;\n    padding-left: 18px;\n    color: var(--offwhite);\n    font-size: 14px;\n    line-height: 1.65;\n    margin-bottom: 9px;\n  }\n  ul.items li:last-child {\n    margin-bottom: 0;\n  }\n  ul.items li::before {\n    content: \"\";\n    position: absolute;\n    left: 0;\n    top: 0.7em;\n    width: 6px;\n    height: 1.5px;\n    background: var(--gold);\n  }\n\n  ul.items.focus li::before {\n    background: transparent;\n    border: 1px solid var(--gold);\n    width: 5px;\n    height: 5px;\n    border-radius: 50%;\n    top: 0.55em;\n  }\n\n  /* ---------- Footer ---------- */\n  footer {\n    border-top: 1px solid var(--offwhite-faint);\n    padding: 22px 48px;\n    text-align: center;\n    color: var(--offwhite-muted);\n    font-size: 11px;\n    letter-spacing: 0.08em;\n    background: var(--maroon-darker);\n  }\n\n  /* ---------- Tablet ---------- */\n  @media (max-width: 1100px) {\n    .phases {\n      grid-template-columns: repeat(2, 1fr);\n      gap: 28px 32px;\n    }\n    .phase + .phase::before,\n    .phase + .phase::after {\n      display: none;\n    }\n    /* Add arrows manually for 2-col layout */\n    .phase:nth-child(1)::after,\n    .phase:nth-child(3)::after {\n      content: \"\";\n      position: absolute;\n      top: 50%;\n      right: -28px;\n      width: 28px;\n      height: 1.5px;\n      background: var(--gold);\n      transform: translateY(-50%);\n    }\n    .phase:nth-child(1) .arrow-tip,\n    .phase:nth-child(3) .arrow-tip {\n      position: absolute;\n      top: 50%;\n      right: -8px;\n      transform: translateY(-50%);\n      width: 0;\n      height: 0;\n      border-left: 8px solid var(--gold);\n      border-top: 6px solid transparent;\n      border-bottom: 6px solid transparent;\n    }\n    .phase:nth-child(2) .arrow-down,\n    .phase:nth-child(2):after {\n      content: \"\";\n      position: absolute;\n      bottom: -28px;\n      left: 50%;\n      transform: translateX(-50%);\n      width: 1.5px;\n      height: 28px;\n      background: var(--gold);\n    }\n    .phase:nth-child(2) .arrow-down-tip {\n      position: absolute;\n      bottom: -8px;\n      left: 50%;\n      transform: translateX(-50%);\n      width: 0;\n      height: 0;\n      border-top: 8px solid var(--gold);\n      border-left: 6px solid transparent;\n      border-right: 6px solid transparent;\n    }\n  }\n\n  /* ---------- Mobile ---------- */\n  @media (max-width: 720px) {\n    .site-header { padding: 24px 20px 22px; }\n    main { padding: 36px 20px 48px; }\n    footer { padding: 18px 20px; }\n\n    .phases {\n      grid-template-columns: 1fr;\n      gap: 44px;\n    }\n    .phase + .phase::before,\n    .phase + .phase::after {\n      display: none;\n    }\n    .phase:nth-child(1)::after,\n    .phase:nth-child(3)::after,\n    .phase:nth-child(1) .arrow-tip,\n    .phase:nth-child(3) .arrow-tip,\n    .phase:nth-child(2) .arrow-down,\n    .phase:nth-child(2) .arrow-down-tip {\n      display: none !important;\n    }\n    /* Vertical arrows between all phases */\n    .phase:not(:last-child)::after {\n      content: \"\";\n      display: block;\n      position: absolute;\n      bottom: -34px;\n      left: 50%;\n      transform: translateX(-50%);\n      width: 1.5px;\n      height: 26px;\n      background: var(--gold);\n    }\n    .phase:not(:last-child) .arrow-down-mobile {\n      position: absolute;\n      bottom: -14px;\n      left: 50%;\n      transform: translateX(-50%);\n      width: 0;\n      height: 0;\n      border-top: 8px solid var(--gold);\n      border-left: 6px solid transparent;\n      border-right: 6px solid transparent;\n      display: block !important;\n    }\n    .intro-row {\n      flex-direction: column;\n      align-items: flex-start;\n    }\n  }\n\n  .arrow-down-mobile {\n    display: none;\n  }\n  @media (max-width: 720px) {\n    .arrow-down-mobile { display: block; }\n  }\n<\u002Fstyle>\n<style><\u002Fstyle><\u002Fhead>\n<body data-new-gr-c-s-check-loaded=\"14.1292.0\" data-gr-ext-installed=\"\" style=\"\" data-new-gr-c-s-loaded=\"14.1292.0\">\n\n\n\n<header class=\"site-header\">\n  <div class=\"site-header-inner\">\n    <span class=\"eyebrow\">PSY 553 · Spring Semester<\u002Fspan>\n    <h1 class=\"course-title\">PSY 553 顶点课程 · 学期进度流程图<\u002Fh1>\n    <p class=\"course-subtitle\">Capstone Course · 8-Week Roadmap<\u002Fp>\n  <\u002Fdiv>\n<\u002Fheader>\n\n<main>\n  <div class=\"intro-row\">\n    <p class=\"intro\">本课程为期八周。下面是各阶段的提交任务与重点工作。<\u002Fp>\n    <div class=\"legend\">\n      <span class=\"legend-tag submit\">需要提交的作业<\u002Fspan>\n      <span class=\"legend-tag focus\">重点<\u002Fspan>\n    <\u002Fdiv>\n  <\u002Fdiv>\n\n  <div class=\"phases\">\n\n    <!-- Phase 1 -->\n    <section class=\"phase\">\n      <span class=\"arrow-tip\"><\u002Fspan>\n      <span class=\"arrow-down-mobile\"><\u002Fspan>\n      <div class=\"phase-number-row\">\n        <span class=\"phase-num\">PHASE 01<\u002Fspan>\n        <span class=\"phase-pill\">Start<\u002Fspan>\n      <\u002Fdiv>\n      <div class=\"phase-name\">第一周<\u002Fdiv>\n      <div class=\"phase-week\">Week 1 · 启动与定向<\u002Fdiv>\n      <div class=\"phase-divider\"><\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag submit\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M2 6.5L4.5 9L10 3\" stroke=\"#3D0919\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><\u002Fpath>\n            <\u002Fsvg>\n            需要提交的作业\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items\">\n          <li>学术承诺书<\u002Fli>\n          <li>说出你的故事<\u002Fli>\n          <li>文献阅读笔记(AI-Facilitated Critical Reading Reflection)<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag focus\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <circle cx=\"6\" cy=\"6\" r=\"4.2\" stroke=\"#FFC627\" stroke-width=\"1.4\"><\u002Fcircle>\n              <circle cx=\"6\" cy=\"6\" r=\"1.2\" fill=\"#FFC627\"><\u002Fcircle>\n            <\u002Fsvg>\n            重点\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items focus\">\n          <li>参加第一次线上交流<\u002Fli>\n          <li>了解各项作业要求,尤其是文献阅读笔记作业要求<\u002Fli>\n          <li style=\"\" spellcheck=\"false\">查看《文献综述:从想法到论证的完整过程》<\u002Fli>\n          <li style=\"\">确定研究领域的关键词、核心理论和核心文献<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n    <\u002Fsection>\n\n    <!-- Phase 2 -->\n    <section class=\"phase\">\n      <span class=\"arrow-tip\"><\u002Fspan>\n      <span class=\"arrow-down-tip\"><\u002Fspan>\n      <span class=\"arrow-down-mobile\"><\u002Fspan>\n      <div class=\"phase-number-row\">\n        <span class=\"phase-num\">PHASE 02<\u002Fspan>\n        <span class=\"phase-pill\">Outline<\u002Fspan>\n      <\u002Fdiv>\n      <div class=\"phase-name\">第二周<\u002Fdiv>\n      <div class=\"phase-week\">Week 2 · 框架搭建<\u002Fdiv>\n      <div class=\"phase-divider\"><\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag submit\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M2 6.5L4.5 9L10 3\" stroke=\"#3D0919\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><\u002Fpath>\n            <\u002Fsvg>\n            需要提交的作业\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items\">\n          <li>文献综述大纲<\u002Fli>\n          <li>文献阅读笔记<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag focus\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <circle cx=\"6\" cy=\"6\" r=\"4.2\" stroke=\"#FFC627\" stroke-width=\"1.4\"><\u002Fcircle>\n              <circle cx=\"6\" cy=\"6\" r=\"1.2\" fill=\"#FFC627\"><\u002Fcircle>\n            <\u002Fsvg>\n            重点\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items focus\">\n          <li spellcheck=\"false\" style=\"\">查看任课教师对\"说出你的故事\"的反馈，并进一步扩展阅读<\u002Fli>\n          <li style=\"\" spellcheck=\"false\">继续根据心理学关键词来扩展搜索，积累学术文献阅读<\u002Fli>\n          <li>预约与任课教师的视频讨论<\u002Fli>\n          <li style=\"\">考虑是否在组会上进行报告<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n    <\u002Fsection>\n\n    <!-- Phase 3 -->\n    <section class=\"phase\">\n      <span class=\"arrow-tip\"><\u002Fspan>\n      <span class=\"arrow-down-mobile\"><\u002Fspan>\n      <div class=\"phase-number-row\">\n        <span class=\"phase-num\">PHASE 03<\u002Fspan>\n        <span class=\"phase-pill\">Develop<\u002Fspan>\n      <\u002Fdiv>\n      <div class=\"phase-name\">第三周至第五周<\u002Fdiv>\n      <div class=\"phase-week\">Weeks 3 – 5 · 深度研读与撰写<\u002Fdiv>\n      <div class=\"phase-divider\"><\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag submit\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M2 6.5L4.5 9L10 3\" stroke=\"#3D0919\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><\u002Fpath>\n            <\u002Fsvg>\n            需要提交的作业\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items\">\n          <li>文献阅读笔记<\u002Fli>\n          <li>文献综述<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag focus\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <circle cx=\"6\" cy=\"6\" r=\"4.2\" stroke=\"#FFC627\" stroke-width=\"1.4\"><\u002Fcircle>\n              <circle cx=\"6\" cy=\"6\" r=\"1.2\" fill=\"#FFC627\"><\u002Fcircle>\n            <\u002Fsvg>\n            重点\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items focus\">\n          <li>根据大纲继续搜索、阅读和整理文献<\u002Fli>\n          <li>不断更新大纲,通过文献阅读丰富文献综述<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n    <\u002Fsection>\n\n    <!-- Phase 4 -->\n    <section class=\"phase\">\n      <div class=\"phase-number-row\">\n        <span class=\"phase-num\">PHASE 04<\u002Fspan>\n        <span class=\"phase-pill\">Defend<\u002Fspan>\n      <\u002Fdiv>\n      <div class=\"phase-name\">第六、第七周<\u002Fdiv>\n      <div class=\"phase-week\">Weeks 6 – 7 · 开题与定稿<\u002Fdiv>\n      <div class=\"phase-divider\"><\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag submit\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M2 6.5L4.5 9L10 3\" stroke=\"#3D0919\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><\u002Fpath>\n            <\u002Fsvg>\n            需要提交的作业\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items\">\n          <li>开题报告<\u002Fli>\n          <li>文献阅读笔记<\u002Fli>\n          <li>最后一次组会之前提交组会报告 PPT<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n\n      <div class=\"section\">\n        <div class=\"section-header\">\n          <span class=\"section-tag focus\">\n            <svg width=\"11\" height=\"11\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <circle cx=\"6\" cy=\"6\" r=\"4.2\" stroke=\"#FFC627\" stroke-width=\"1.4\"><\u002Fcircle>\n              <circle cx=\"6\" cy=\"6\" r=\"1.2\" fill=\"#FFC627\"><\u002Fcircle>\n            <\u002Fsvg>\n            重点\n          <\u002Fspan>\n        <\u002Fdiv>\n        <ul class=\"items focus\">\n          <li>在等待任课教师修改意见的同时,完成研究方法部分的撰写<\u002Fli>\n          <li>根据任课教师对文献综述的意见修改文献综述部分<\u002Fli>\n        <\u002Ful>\n      <\u002Fdiv>\n    <\u002Fsection>\n\n  <\u002Fdiv>\n<\u002Fmain>\n\n<footer>\n  Arizona State University · College of Health Solutions · AZX Online M.S. in Psychology\n<\u002Ffooter>\n\n\n\n<grammarly-desktop-integration data-grammarly-shadow-root=\"true\"><\u002Fgrammarly-desktop-integration><\u002Fbody><\u002Fhtml>"
+  </script>
+</body>
+</html>
